@@ -6,5 +6,5 @@ dist
 /.settings/
 Thumbs.db
 
-
+search.private.json
 output
