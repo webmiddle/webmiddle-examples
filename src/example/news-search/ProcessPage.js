@@ -14,7 +14,8 @@ function ProcessPage({
   site, query, startYear, endYear, pageNumber, filters,
   webmiddle, options, ...rest,
 }) {
-  const { SearchArticles, ArticleDetails } = site.services;
+  const SearchArticles = site.service('SearchArticles');
+  const ArticleDetails = site.service('ArticleDetails');
 
   return (
     <Pipe>

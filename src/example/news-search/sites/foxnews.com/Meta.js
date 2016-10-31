@@ -1,7 +1,6 @@
 import WebMiddle, { PropTypes } from 'webmiddle';
 import Parent from '../../../sites/foxnews.com/services/SearchArticles';
 import Pipe from 'webmiddle-service-pipe';
-import parentConfig from '../../../sites/foxnews.com/config';
 
 function Meta({ webmiddle, options, ...rest }) {
   return (
@@ -19,7 +18,7 @@ function Meta({ webmiddle, options, ...rest }) {
           contentType: 'application/json',
           content: {
             count,
-            numberOfPages: Math.ceil(count / parentConfig.resultsPerPage),
+            numberOfPages: Math.ceil(count / webmiddle.setting('resultsPerPage')),
           },
         };
       }}

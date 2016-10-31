@@ -20,7 +20,7 @@ function Meta({ nytimesApiKey, webmiddle, options, ...rest }) {
           contentType: 'application/json',
           content: {
             count,
-            numberOfPages: Math.ceil(count / parentConfig.resultsPerPage),
+            numberOfPages: Math.ceil(count / webmiddle.setting('resultsPerPage')),
           },
         };
       }}

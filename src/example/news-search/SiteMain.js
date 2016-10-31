@@ -17,7 +17,7 @@ import Resume from 'webmiddle-service-resume';
 
 function SiteMain({ webmiddle, options, ...rest }) {
   const { site } = rest;
-  const { Meta } = site.services;
+  const Meta = site.service('Meta');
 
   return (
     <Pipe>
