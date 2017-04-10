@@ -1,10 +1,8 @@
-import PropTypes from 'proptypes';
+import WebMiddle, { PropTypes, isVirtual, evaluate, createContext } from 'webmiddle';
 import cheerio from 'cheerio';
-import evaluate from '../../utils/evaluate';
-import isVirtual from '../../utils/isVirtual';
 
 // Note: virtual.type must be a string
-async function processVirtual(virtual, sourceEl, source) {
+async function processVirtual(virtual, sourceEl, source, context) {
   let el = virtual.attributes.el;
   if (!el) {
     el = sourceEl;
@@ -21,7 +19,7 @@ async function processVirtual(virtual, sourceEl, source) {
   }
 
   const childrenRawXml = await Promise.all(
-    virtual.children.map(child => process(child, el, source))
+    virtual.children.map(child => process(child, el, source, context))
   );
 
   return `
@@ -32,19 +30,19 @@ async function processVirtual(virtual, sourceEl, source) {
 }
 
 // @return raw xml conversion of value
-async function process(value, sourceEl, source) {
-  let result = await evaluate(value, {
+async function process(value, sourceEl, source, context) {
+  let result = await evaluate(createContext(context, {
     functionParameters: [sourceEl, source],
-  });
+  }), value);
 
   if (isVirtual(result)) {
     // virtual type is not a function,
     // otherwise it would have been evaluated
-    result = await processVirtual(result, sourceEl, source);
+    result = await processVirtual(result, sourceEl, source, context);
   } else if (Array.isArray(result)) {
     // recursion
     result = await Promise.all(
-      result.map(r => process(r, sourceEl, source))
+      result.map(r => process(r, sourceEl, source, context))
     );
     // treat each element as a separate child
     result = result.join('\n');
@@ -64,14 +62,14 @@ async function process(value, sourceEl, source) {
 }
 
 const CheerioToXml =
-async ({ name, from, children }) => {
+async ({ name, from, children }, context) => {
   // parse html or xml
   const source = cheerio.load(from.content, {
     xmlMode: from.contentType === 'text/xml',
   });
 
   const childrenRawXml = await Promise.all(
-    children.map(child => process(child, source.root(), source))
+    children.map(child => process(child, source.root(), source, context))
   );
 
   const target = cheerio.load(`
