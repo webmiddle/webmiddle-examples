@@ -32,6 +32,7 @@ async function processVirtual(virtual, sourceEl, source, context) {
 // @return raw xml conversion of value
 async function process(value, sourceEl, source, context) {
   let result = await evaluate(createContext(context, {
+    expectResource: false,
     functionParameters: [sourceEl, source],
   }), value);
 
