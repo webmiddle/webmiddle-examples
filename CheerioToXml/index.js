@@ -1,4 +1,4 @@
-import WebMiddle, { PropTypes, isVirtual, evaluate, createContext } from 'webmiddle';
+import { PropTypes, isVirtual } from 'webmiddle';
 import cheerio from 'cheerio';
 
 // Note: virtual.type must be a string
@@ -31,10 +31,10 @@ async function processVirtual(virtual, sourceEl, source, context) {
 
 // @return raw xml conversion of value
 async function process(value, sourceEl, source, context) {
-  let result = await evaluate(createContext(context, {
+  let result = await context.extend({
     expectResource: false,
     functionParameters: [sourceEl, source],
-  }), value);
+  }).evaluate(value);
 
   if (isVirtual(result)) {
     // virtual type is not a function,
