@@ -81,7 +81,7 @@ async ({ name, from, children }, context) => {
     xmlMode: true,
   });
 
-  return { name, contentType: 'text/xml', content: target.xml().trim() };
+  return context.createResource(name, 'text/xml', target.xml().trim());
 };
 
 CheerioToXml.propTypes = {
